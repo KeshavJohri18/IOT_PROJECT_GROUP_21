@@ -1,2 +1,9 @@
-__pycache__
-data
+__pycache__/
+data/
+*.pyc
+*.pyo
+*.pyd
+output/test/tracking_results/
+output/test/result_plots/
+output/checkpoints/train/
+*.ipynb_checkpoints

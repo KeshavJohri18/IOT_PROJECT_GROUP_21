@@ -151,11 +151,12 @@ class BaseBackbone(nn.Module):
                 x = blk(x)
                 mid = x.detach()
                 pro = self.MLP(x[:,:,0].clone())
-                topk_values, topk_indices = torch.topk(pro, enabled_layer_num, dim=1)
-                sorted_topk_indices = torch.sort(topk_indices, dim=1).values + start_layer + 1
-                # sorted_topk_values = torch.sort(topk_values, dim=1).values
+                # Randomly sample layer indices for each batch
+                num_layers = len(self.blocks)
+                rand_indices = torch.randint(start_layer+1, num_layers, (B, enabled_layer_num), device=x.device)
+                selected_indices = rand_indices
             else:
-                idx = torch.where(sorted_topk_indices[:,:]==i)[0]
+                idx = torch.where(selected_indices[:,:]==i)[0]
                 if len(idx) > 0:
                     x[idx] = blk(x[idx])
 
@@ -213,11 +214,12 @@ class BaseBackbone(nn.Module):
             elif i == start_layer:
                 x = blk(x)
                 pro = self.MLP(x[:,:,0].clone())
-                topk_values, topk_indices = torch.topk(pro, enabled_layer_num, dim=1)
-                sorted_topk_indices = torch.sort(topk_indices, dim=1).values + start_layer + 1
-                # sorted_topk_values = torch.sort(topk_values, dim=1).values
+                # Randomly sample layer indices for each batch
+                num_layers = len(self.blocks)
+                rand_indices = torch.randint(start_layer+1, num_layers, (B, enabled_layer_num), device=x.device)
+                selected_indices = rand_indices
             else:
-                idx = torch.where(sorted_topk_indices[:,:]==i)[0]
+                idx = torch.where(selected_indices[:,:]==i)[0]
                 if len(idx) > 0:
                     x[idx] = blk(x[idx])
                     break
